@@ -13,8 +13,7 @@ function App() {
   const [noAttempts, setNoAttempts] = useState(0);
   const [showHearts, setShowHearts] = useState(false);
   const [blockSi, setBlockSi] = useState(false);
-const [noLocked, setNoLocked] = useState(false);
-
+  const [noLocked, setNoLocked] = useState(false);
 
   let random = [
     {
@@ -85,24 +84,23 @@ const [noLocked, setNoLocked] = useState(false);
   ];
 
   const randomResponse = () => {
-  if (noLocked) return; // 👈 BLOQUEO
-  setNoLocked(true);
+    if (noLocked) return;
+    setNoLocked(true);
 
-  mixpanel.track('Boton No Clickeado');
-  setNoAttempts(prev => prev + 1);
-  setSiButtonSize(prev => Math.min(prev + 0.15, 1.8));
+    mixpanel.track('Boton No Clickeado');
+    setNoAttempts(prev => prev + 1);
+    setSiButtonSize(prev => Math.min(prev + 0.15, 1.8));
 
-  let randX = Math.random() * 40 + 5;
-  let randY = Math.random() * 40 + 35;
+    let randX = Math.random() * 40 + 5;
+    let randY = Math.random() * 40 + 35;
 
-  let index = Math.floor(Math.random() * random.length);
-  setPosition('absolute');
-  setButtonPosition({ top: randY, left: randX });
-  setRandomValor(random[index]);
+    let index = Math.floor(Math.random() * random.length);
+    setPosition('absolute');
+    setButtonPosition({ top: randY, left: randX });
+    setRandomValor(random[index]);
 
-  // 🔓 se desbloquea después de moverse
-  setTimeout(() => setNoLocked(false), 350);
-};
+    setTimeout(() => setNoLocked(false), 350);
+  };
 
   const getTitle = () => {
     if (noAttempts === 0) return "¿Quieres ser mi San Valentín?";
@@ -117,10 +115,9 @@ const [noLocked, setNoLocked] = useState(false);
     setShowHearts(true);
   }, []);
 
-  // Generar corazones flotantes (menos en móviles)
   const FloatingHearts = () => {
     const hearts = ['❤️', '💕', '💖', '💗', '💓', '💝'];
-    const heartCount = window.innerWidth < 768 ? 8 : 15; // 8 en móvil, 15 en desktop
+    const heartCount = window.innerWidth < 768 ? 8 : 15;
     
     return (
       <div className="floating-hearts">
@@ -155,14 +152,17 @@ const [noLocked, setNoLocked] = useState(false);
           </h1>
           
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 shadow-2xl">
-            {/* OPCIÓN: Puedes mostrar una foto de ustedes aquí también */}
-            {/* <div className="mb-4">
+            
+            {/* ============================================== */}
+            {/* FOTO INICIAL (OPCIONAL) - Descomenta esto 👇 */}
+            {/* ============================================== */}
+             <div className="mb-4">
               <img
-                src="/path-to-your-photo.jpg"
+                src="/nuestra-foto-inicial.jpg"
                 alt="Nosotros"
                 className="mx-auto object-cover w-full max-w-xs rounded-lg shadow-md"
               />
-            </div> */}
+            </div> 
             
             <img
               src={
@@ -180,67 +180,65 @@ const [noLocked, setNoLocked] = useState(false);
               </p>
             )}
             
-            <div className="relative z-30 flex justify-center">
-  <button
-    onClick={() => {
-      mixpanel.track('Boton Si Clickeado');
-      setValueSi(true);
+            <div className="relative z-30 flex justify-center mt-6">
+              <button
+                onClick={() => {
+                  mixpanel.track('Boton Si Clickeado');
+                  setValueSi(true);
 
-      jsConfetti.addConfetti({
-        emojis: ['😍', '🥰', '❤️', '😘', '💕', '💖'],
-        emojiSize: 70,
-        confettiNumber: 250,
-      });
-    }}
-    style={{
-      transform: `scale(${siButtonSize})`,
-      transformOrigin: 'center',
-      position: 'relative',
-      zIndex: 30,
-      pointerEvents: 'auto'
-    }}
-    className="bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg transition-all duration-300 active:scale-95"
-  >
-    Sí ❤️
-  </button>
-</div>
-              
-              {/* Botón No - se mueve cuando haces hover/click */}
-             <button
-  onTouchStart={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    randomResponse();
-  }}
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }}
-  style={{
-    position: position,
-    top: `${buttonPosition.top}%`,
-    left: `${buttonPosition.left}%`,
-    transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-    zIndex: 10,
-    touchAction: 'none' // 👈 MUY IMPORTANTE
-  }}
-  className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg"
->
-                {Object.keys(randomValor).length === 0
-                  ? 'No'
-                  : randomValor.description}
-                <span hidden>
-                  {
-                    (document.title =
-                      Object.keys(randomValor).length === 0
-                        ? '¿Quieres ser mi San Valentín?'
-                        : randomValor.description)
-                  }
-                  
-                </span>
+                  jsConfetti.addConfetti({
+                    emojis: ['😍', '🥰', '❤️', '😘', '💕', '💖'],
+                    emojiSize: 70,
+                    confettiNumber: 250,
+                  });
+                }}
+                style={{
+                  transform: `scale(${siButtonSize})`,
+                  transformOrigin: 'center',
+                  position: 'relative',
+                  zIndex: 30,
+                  pointerEvents: 'auto'
+                }}
+                className="bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg transition-all duration-300 active:scale-95"
+              >
+                Sí ❤️
               </button>
             </div>
+              
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                randomResponse();
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              style={{
+                position: position,
+                top: `${buttonPosition.top}%`,
+                left: `${buttonPosition.left}%`,
+                transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                zIndex: 10,
+                touchAction: 'none'
+              }}
+              className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg"
+            >
+              {Object.keys(randomValor).length === 0
+                ? 'No'
+                : randomValor.description}
+              <span hidden>
+                {
+                  (document.title =
+                    Object.keys(randomValor).length === 0
+                      ? '¿Quieres ser mi San Valentín?'
+                      : randomValor.description)
+                }
+              </span>
+            </button>
           </div>
+        </div>
         
       ) : (
         <div className="flex justify-center items-center flex-col space-y-6 p-4 relative z-10">
@@ -249,14 +247,20 @@ const [noLocked, setNoLocked] = useState(false);
           </h1>
           
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-8 shadow-2xl">
-            {/* Opción 1: Usa tu foto de pareja */}
-            {/* <img
-              src="/path-to-your-photo.jpg"
+            
+            {/* ================================================= */}
+            {/* FOTO FINAL (RECOMENDADO) - Descomenta esto 👇    */}
+            {/* ================================================= */}
+             <img
+              src="/nuestra-foto-final.jpg"
               alt="Nuestra foto"
               className="mx-auto rounded-lg shadow-lg max-w-xs md:max-w-md"
-            /> */}
+            /> 
             
-            {/* Opción 2: GIF de celebración (actual) */}
+            {/* ================================================= */}
+            {/* GIF de celebración (ACTUAL) - Comenta esto 👇    */}
+            {/* si quieres usar tu foto en lugar del GIF         */}
+            {/* ================================================= */}
             <img
               src="https://i.pinimg.com/originals/9b/dc/c6/9bdcc6206c1d36a37149d31108c6bb41.gif"
               alt="Celebración"
