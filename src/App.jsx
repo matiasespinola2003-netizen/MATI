@@ -85,7 +85,8 @@ function App() {
     mixpanel.track('Boton No Clickeado');
     
     setNoAttempts(prev => prev + 1);
-    setSiButtonSize(prev => Math.min(prev + 0.2, 2.5));
+    // Crecimiento más pequeño para móviles: crece 0.15 hasta máximo 1.8x
+    setSiButtonSize(prev => Math.min(prev + 0.15, 1.8));
 
     // Límites más seguros para que el botón no se salga de la pantalla
     let randX = Math.random() * 60 + 5; // Entre 5% y 65%
@@ -110,12 +111,14 @@ function App() {
     setShowHearts(true);
   }, []);
 
-  // Generar corazones flotantes
+  // Generar corazones flotantes (menos en móviles)
   const FloatingHearts = () => {
     const hearts = ['❤️', '💕', '💖', '💗', '💓', '💝'];
+    const heartCount = window.innerWidth < 768 ? 8 : 15; // 8 en móvil, 15 en desktop
+    
     return (
       <div className="floating-hearts">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(heartCount)].map((_, i) => (
           <div
             key={i}
             className="heart"
@@ -140,12 +143,12 @@ function App() {
       {showHearts && <FloatingHearts />}
       
       {!valueSi ? (
-        <div className="p-5 relative z-10 max-w-2xl w-full">
-          <h1 className="font-bold text-3xl md:text-5xl text-center mb-8 text-pink-700">
+        <div className="p-3 md:p-5 relative z-10 max-w-2xl w-full">
+          <h1 className="font-bold text-2xl md:text-4xl lg:text-5xl text-center mb-6 text-pink-700 px-2">
             {getTitle()}
           </h1>
           
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-2xl">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 shadow-2xl">
             <img
               src={
                 Object.keys(randomValor).length === 0
@@ -153,16 +156,16 @@ function App() {
                   : randomValor.img
               }
               alt="San Valentin"
-              className="mx-auto object-cover h-[200px] md:h-[250px] rounded-lg"
+              className="mx-auto object-cover h-[160px] md:h-[220px] rounded-lg"
             />
             
             {noAttempts > 0 && (
-              <p className="text-center mt-4 text-gray-600 animate-pulse">
+              <p className="text-center mt-3 text-sm md:text-base text-gray-600 animate-pulse">
                 Intentos de escape: {noAttempts} 😏
               </p>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 mt-10 gap-5 items-center relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-4 items-center relative">
               <button
                 onClick={() => {
                   mixpanel.track('Boton Si Clickeado');
@@ -178,13 +181,13 @@ function App() {
                   transform: `scale(${siButtonSize})`,
                   transformOrigin: 'center'
                 }}
-                className={`bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-3 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95`}
+                className={`bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95`}
               >
                 Sí ❤️
               </button>
               
               <button
-                className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-48 font-bold p-3 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 onMouseOver={randomResponse}
                 onClick={randomResponse}
                 onTouchStart={randomResponse}
@@ -211,20 +214,20 @@ function App() {
           </div>
         </div>
       ) : (
-        <div className="flex justify-center items-center flex-col space-y-10 p-5 relative z-10">
-          <h1 className="text-4xl md:text-6xl font-bold text-center animate-bounce text-pink-700">
+        <div className="flex justify-center items-center flex-col space-y-6 p-4 relative z-10">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-center animate-bounce text-pink-700 px-2">
             ¡Sabía que dirías que sí! ❤️
           </h1>
           
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-8 shadow-2xl">
             <img
               src="https://i.pinimg.com/originals/9b/dc/c6/9bdcc6206c1d36a37149d31108c6bb41.gif"
               alt="Celebración"
-              className="mx-auto rounded-lg shadow-lg max-w-md"
+              className="mx-auto rounded-lg shadow-lg max-w-xs md:max-w-md"
             />
           </div>
           
-          <p className="text-xl md:text-2xl text-center max-w-2xl text-gray-700 bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+          <p className="text-lg md:text-xl lg:text-2xl text-center max-w-2xl text-gray-700 bg-white/70 backdrop-blur-sm p-4 md:p-6 rounded-xl shadow-lg mx-4">
             {noAttempts > 0 
               ? `¡Lo intentaste ${noAttempts} ${noAttempts === 1 ? 'vez' : 'veces'} pero sabía que terminarías diciendo que sí! 🥰`
               : "¡Sabía que eras la persona indicada! 💕"
