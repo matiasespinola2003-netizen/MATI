@@ -176,30 +176,30 @@ function App() {
               </p>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-4 items-center relative min-h-[60px]">
-              {/* Botón Sí - siempre en su posición */}
-              <button
-                onClick={() => {
-                  mixpanel.track('Boton Si Clickeado');
-                  setValueSi(true);
+            <div className="relative z-30 flex justify-center">
+  <button
+    onClick={() => {
+      mixpanel.track('Boton Si Clickeado');
+      setValueSi(true);
 
-                  jsConfetti.addConfetti({
-                    emojis: ['😍', '🥰', '❤️', '😘', '💕', '💖'],
-                    emojiSize: 70,
-                    confettiNumber: 250,
-                  });
-                }}
-                disabled={blockSi}
-  style={{
-    pointerEvents: blockSi ? 'none' : 'auto',
-    transform: `scale(${siButtonSize})`,
-    transformOrigin: 'center',
-    zIndex: position === 'absolute' ? 1 : 10
-  }}
-                className={`bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95`}
-              >
-                Sí ❤️
-              </button>
+      jsConfetti.addConfetti({
+        emojis: ['😍', '🥰', '❤️', '😘', '💕', '💖'],
+        emojiSize: 70,
+        confettiNumber: 250,
+      });
+    }}
+    style={{
+      transform: `scale(${siButtonSize})`,
+      transformOrigin: 'center',
+      position: 'relative',
+      zIndex: 30,
+      pointerEvents: 'auto'
+    }}
+    className="bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg transition-all duration-300 active:scale-95"
+  >
+    Sí ❤️
+  </button>
+</div>
               
               {/* Botón No - se mueve cuando haces hover/click */}
               <button
@@ -217,13 +217,14 @@ function App() {
     e.stopPropagation();
     randomResponse();
   }}
-                style={{
-                  position: position,
-                  top: `${buttonPosition.top}%`,
-                  left: `${buttonPosition.left}%`,
-                  transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-                  zIndex: 20, // Siempre encima
-                }}
+               style={{
+  position: position,
+  top: `${buttonPosition.top}%`,
+  left: `${buttonPosition.left}%`,
+  transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+  zIndex: 10, // 👈 SIEMPRE menor que el Sí
+}}
+
               >
                 {Object.keys(randomValor).length === 0
                   ? 'No'
@@ -240,7 +241,7 @@ function App() {
               </button>
             </div>
           </div>
-        </div>
+        
       ) : (
         <div className="flex justify-center items-center flex-col space-y-6 p-4 relative z-10">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-center animate-bounce text-pink-700 px-2">
