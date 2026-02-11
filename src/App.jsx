@@ -12,6 +12,8 @@ function App() {
   const [siButtonSize, setSiButtonSize] = useState(1);
   const [noAttempts, setNoAttempts] = useState(0);
   const [showHearts, setShowHearts] = useState(false);
+  const [blockSi, setBlockSi] = useState(false);
+
 
   let random = [
     {
@@ -187,11 +189,13 @@ function App() {
                     confettiNumber: 250,
                   });
                 }}
-                style={{ 
-                  transform: `scale(${siButtonSize})`,
-                  transformOrigin: 'center',
-                  zIndex: position === 'absolute' ? 1 : 10 // Menor z-index cuando el botón No está flotando
-                }}
+                disabled={blockSi}
+  style={{
+    pointerEvents: blockSi ? 'none' : 'auto',
+    transform: `scale(${siButtonSize})`,
+    transformOrigin: 'center',
+    zIndex: position === 'absolute' ? 1 : 10
+  }}
                 className={`bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95`}
               >
                 Sí ❤️
@@ -201,16 +205,18 @@ function App() {
               <button
                 className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 onMouseEnter={randomResponse}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  randomResponse();
-                }}
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  randomResponse();
-                }}
+  onTouchStart={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setBlockSi(true);
+    randomResponse();
+  }}
+  onTouchEnd={() => setBlockSi(false)}
+  onClick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    randomResponse();
+  }}
                 style={{
                   position: position,
                   top: `${buttonPosition.top}%`,
@@ -229,6 +235,7 @@ function App() {
                         ? '¿Quieres ser mi San Valentín?'
                         : randomValor.description)
                   }
+                  
                 </span>
               </button>
             </div>
