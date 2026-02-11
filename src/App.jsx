@@ -165,7 +165,8 @@ function App() {
               </p>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-4 items-center relative">
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-4 items-center relative min-h-[60px]">
+              {/* Botón Sí - siempre en su posición */}
               <button
                 onClick={() => {
                   mixpanel.track('Boton Si Clickeado');
@@ -179,23 +180,34 @@ function App() {
                 }}
                 style={{ 
                   transform: `scale(${siButtonSize})`,
-                  transformOrigin: 'center'
+                  transformOrigin: 'center',
+                  zIndex: position === 'absolute' ? 1 : 10 // Menor z-index cuando el botón No está flotando
                 }}
                 className={`bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-2.5 md:p-3 rounded-lg text-lg md:text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95`}
               >
                 Sí ❤️
               </button>
               
+              {/* Botón No - se mueve cuando haces hover/click */}
               <button
                 className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                onMouseOver={randomResponse}
-                onClick={randomResponse}
-                onTouchStart={randomResponse}
+                onMouseEnter={randomResponse}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  randomResponse();
+                }}
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  randomResponse();
+                }}
                 style={{
                   position: position,
                   top: `${buttonPosition.top}%`,
                   left: `${buttonPosition.left}%`,
                   transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                  zIndex: 20, // Siempre encima
                 }}
               >
                 {Object.keys(randomValor).length === 0
