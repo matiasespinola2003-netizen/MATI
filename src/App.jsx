@@ -149,6 +149,15 @@ function App() {
           </h1>
           
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-6 shadow-2xl">
+            {/* OPCIÓN: Puedes mostrar una foto de ustedes aquí también */}
+            {/* <div className="mb-4">
+              <img
+                src="/path-to-your-photo.jpg"
+                alt="Nosotros"
+                className="mx-auto object-cover w-full max-w-xs rounded-lg shadow-md"
+              />
+            </div> */}
+            
             <img
               src={
                 Object.keys(randomValor).length === 0
@@ -228,10 +237,18 @@ function App() {
       ) : (
         <div className="flex justify-center items-center flex-col space-y-6 p-4 relative z-10">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-center animate-bounce text-pink-700 px-2">
-            ¡Sabía que dirías que sí! ❤️
+            ¡Sabía que dirías que sí, Marlene! ❤️
           </h1>
           
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 md:p-8 shadow-2xl">
+            {/* Opción 1: Usa tu foto de pareja */}
+            {/* <img
+              src="/path-to-your-photo.jpg"
+              alt="Nuestra foto"
+              className="mx-auto rounded-lg shadow-lg max-w-xs md:max-w-md"
+            /> */}
+            
+            {/* Opción 2: GIF de celebración (actual) */}
             <img
               src="https://i.pinimg.com/originals/9b/dc/c6/9bdcc6206c1d36a37149d31108c6bb41.gif"
               alt="Celebración"
@@ -246,7 +263,7 @@ function App() {
             }
           </p>
           
-          <span hidden>{(document.title = '¡Sabía que dirías que sí! ❤️')}</span>
+          <span hidden>{(document.title = '¡Sabía que dirías que sí, Marlene! ❤️')}</span>
         </div>
       )}
     </main>
