@@ -13,6 +13,7 @@ function App() {
   const [noAttempts, setNoAttempts] = useState(0);
   const [showHearts, setShowHearts] = useState(false);
   const [blockSi, setBlockSi] = useState(false);
+const [noLocked, setNoLocked] = useState(false);
 
 
   let random = [
@@ -84,21 +85,24 @@ function App() {
   ];
 
   const randomResponse = () => {
-    mixpanel.track('Boton No Clickeado');
-    
-    setNoAttempts(prev => prev + 1);
-    // Crecimiento más pequeño para móviles: crece 0.15 hasta máximo 1.8x
-    setSiButtonSize(prev => Math.min(prev + 0.15, 1.8));
+  if (noLocked) return; // 👈 BLOQUEO
+  setNoLocked(true);
 
-    // Límites más seguros para que el botón no se salga de la pantalla
-    let randX = Math.random() * 60 + 5; // Entre 5% y 65%
-    let randY = Math.random() * 60 + 5; // Entre 5% y 65%
+  mixpanel.track('Boton No Clickeado');
+  setNoAttempts(prev => prev + 1);
+  setSiButtonSize(prev => Math.min(prev + 0.15, 1.8));
 
-    let index = Math.floor(Math.random() * random.length);
-    setPosition('absolute');
-    setButtonPosition({ top: randY, left: randX });
-    setRandomValor(random[index]);
-  };
+  let randX = Math.random() * 40 + 5;
+  let randY = Math.random() * 40 + 35;
+
+  let index = Math.floor(Math.random() * random.length);
+  setPosition('absolute');
+  setButtonPosition({ top: randY, left: randX });
+  setRandomValor(random[index]);
+
+  // 🔓 se desbloquea después de moverse
+  setTimeout(() => setNoLocked(false), 350);
+};
 
   const getTitle = () => {
     if (noAttempts === 0) return "¿Quieres ser mi San Valentín?";
@@ -202,30 +206,26 @@ function App() {
 </div>
               
               {/* Botón No - se mueve cuando haces hover/click */}
-              <button
-                className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                onMouseEnter={randomResponse}
+             <button
   onTouchStart={(e) => {
     e.preventDefault();
     e.stopPropagation();
-    setBlockSi(true);
     randomResponse();
   }}
-  onTouchEnd={() => setBlockSi(false)}
   onClick={(e) => {
     e.preventDefault();
     e.stopPropagation();
-    randomResponse();
   }}
-               style={{
-  position: position,
-  top: `${buttonPosition.top}%`,
-  left: `${buttonPosition.left}%`,
-  transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
-  zIndex: 10, // 👈 SIEMPRE menor que el Sí
-}}
-
-              >
+  style={{
+    position: position,
+    top: `${buttonPosition.top}%`,
+    left: `${buttonPosition.left}%`,
+    transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    zIndex: 10,
+    touchAction: 'none' // 👈 MUY IMPORTANTE
+  }}
+  className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-40 md:min-w-48 font-bold p-2.5 md:p-3 rounded-lg text-base md:text-xl shadow-lg"
+>
                 {Object.keys(randomValor).length === 0
                   ? 'No'
                   : randomValor.description}
