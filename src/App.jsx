@@ -6,11 +6,12 @@ import mixpanel from './lib/mixpanel';
 function App() {
   const jsConfetti = new JSConfetti();
   const [randomValor, setRandomValor] = useState({});
-
   const [valueSi, setValueSi] = useState(false);
-
   const [buttonPosition, setButtonPosition] = useState({ top: 0, left: 0 });
   const [position, setPosition] = useState('relative');
+  const [siButtonSize, setSiButtonSize] = useState(1);
+  const [noAttempts, setNoAttempts] = useState(0);
+  const [showHearts, setShowHearts] = useState(false);
 
   let random = [
     {
@@ -19,62 +20,62 @@ function App() {
       img: 'https://i.pinimg.com/originals/db/aa/c1/dbaac13f6278b91a15e480752b8a7242.gif',
     },
     {
-      id: 1,
+      id: 2,
       description: 'Piénsalo de nuevo.',
       img: 'https://i.pinimg.com/originals/77/6b/21/776b215bed3deeef47fd3aa657685a18.gif',
     },
     {
-      id: 2,
+      id: 3,
       description: 'Vamos, atrévete a decir que sí.',
       img: 'https://media.tenor.com/DTmYqda3ZokAAAAi/peachandgoma.gif',
     },
     {
-      id: 3,
+      id: 4,
       description: 'No tengas miedo, será genial.',
       img: 'https://i.pinimg.com/originals/e1/c3/88/e1c388133e0f998e25bb17c837b74a14.gif',
     },
     {
-      id: 4,
+      id: 5,
       description: 'Confía en mí, será divertido.',
       img: 'https://media.tenor.com/Bn88VELdNI8AAAAi/peach-goma.gif',
     },
     {
-      id: 5,
+      id: 6,
       description: 'No tengas dudas, te hará sonreír.',
       img: 'https://i.pinimg.com/originals/c6/b3/0d/c6b30d1a2dc178aeb92de63295d4ae64.gif',
     },
     {
-      id: 6,
+      id: 7,
       description: 'Te prometo que será inolvidable.',
       img: 'https://media.tenor.com/N2oqtqaB_G0AAAAi/peach-goma.gif',
     },
     {
-      id: 7,
+      id: 8,
       description: 'No dejes que el miedo te detenga.',
       img: 'https://i.pinimg.com/originals/db/aa/c1/dbaac13f6278b91a15e480752b8a7242.gif',
     },
     {
-      id: 8,
+      id: 9,
       description: 'Confía en el destino, nos está dando una señal.',
       img: 'https://media.tenor.com/cbEccaK9QxMAAAAi/peach-goma.gif',
     },
     {
-      id: 9,
+      id: 10,
       description: 'Confía en mí.',
       img: 'https://i.pinimg.com/originals/db/aa/c1/dbaac13f6278b91a15e480752b8a7242.gif',
     },
     {
-      id: 10,
+      id: 11,
       description: 'No te arrepentirás.',
       img: 'https://media.tenor.com/I7KdFaMzUq4AAAAi/peach-goma.gif',
     },
     {
-      id: 11,
+      id: 12,
       description: 'Ya pon que siiii',
       img: 'https://media.tenor.com/_4KFcz84OGMAAAAj/cute.gif',
     },
     {
-      id: 12,
+      id: 13,
       description: 'Dale, no seas mala',
       img: 'https://media.tenor.com/Az64YfoL7JcAAAAj/rawr.gif',
     },
@@ -82,9 +83,13 @@ function App() {
 
   const randomResponse = () => {
     mixpanel.track('Boton No Clickeado');
+    
+    setNoAttempts(prev => prev + 1);
+    setSiButtonSize(prev => Math.min(prev + 0.2, 2.5));
 
-    let randX = Math.random() * 70;
-    let randY = Math.random() * 80;
+    // Límites más seguros para que el botón no se salga de la pantalla
+    let randX = Math.random() * 60 + 5; // Entre 5% y 65%
+    let randY = Math.random() * 60 + 5; // Entre 5% y 65%
 
     let index = Math.floor(Math.random() * random.length);
     setPosition('absolute');
@@ -92,80 +97,141 @@ function App() {
     setRandomValor(random[index]);
   };
 
+  const getTitle = () => {
+    if (noAttempts === 0) return "¿Quieres ser mi San Valentín?";
+    if (noAttempts < 3) return "¿Quieres ser mi San Valentín? 🥺";
+    if (noAttempts < 5) return "Por favoooor, di que sí 💕";
+    if (noAttempts < 8) return "Te prometo que será genial 😊";
+    return "Ya pon que SIIIII 😭❤️";
+  };
+
   useEffect(() => {
     mixpanel.track('Pagina Cargada');
+    setShowHearts(true);
   }, []);
+
+  // Generar corazones flotantes
+  const FloatingHearts = () => {
+    const hearts = ['❤️', '💕', '💖', '💗', '💓', '💝'];
+    return (
+      <div className="floating-hearts">
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={i}
+            className="heart"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${5 + Math.random() * 3}s`,
+            }}
+          >
+            {hearts[Math.floor(Math.random() * hearts.length)]}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <main
       id="canvas"
-      className="w-screen relative h-screen bg-no-repeat bg-cover flex items-center justify-center bg-center "
+      className="w-screen relative h-screen bg-gradient-to-br from-pink-100 via-red-50 to-purple-100 flex items-center justify-center overflow-hidden"
     >
+      {showHearts && <FloatingHearts />}
+      
       {!valueSi ? (
-        <div className="p-5">
-          <h1 className="font-bold text-5xl text-center">
-            ¿Quieres ser mi San Valentin?
+        <div className="p-5 relative z-10 max-w-2xl w-full">
+          <h1 className="font-bold text-3xl md:text-5xl text-center mb-8 text-pink-700">
+            {getTitle()}
           </h1>
-          <img
-            src={
-              Object.keys(randomValor).length === 0
-                ? 'https://i.pinimg.com/originals/db/aa/c1/dbaac13f6278b91a15e480752b8a7242.gif'
-                : randomValor.img
-            }
-            alt="San Valentin"
-            className="mx-auto object-cover h-[200px]"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 mt-10 gap-5 items-center">
-            <button
-              onClick={() => {
-                mixpanel.track('Boton Si Clickeado');
+          
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-2xl">
+            <img
+              src={
+                Object.keys(randomValor).length === 0
+                  ? 'https://i.pinimg.com/originals/db/aa/c1/dbaac13f6278b91a15e480752b8a7242.gif'
+                  : randomValor.img
+              }
+              alt="San Valentin"
+              className="mx-auto object-cover h-[200px] md:h-[250px] rounded-lg"
+            />
+            
+            {noAttempts > 0 && (
+              <p className="text-center mt-4 text-gray-600 animate-pulse">
+                Intentos de escape: {noAttempts} 😏
+              </p>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-10 gap-5 items-center relative">
+              <button
+                onClick={() => {
+                  mixpanel.track('Boton Si Clickeado');
+                  setValueSi(true);
 
-                setValueSi(true);
-
-                jsConfetti.addConfetti({
-                  emojis: ['😍', '🥰', '❤️', '😘'],
-                  emojiSize: 70,
-                  confettiNumber: 200,
-                });
-              }}
-              className={`bg-green-500 text-white font-bold p-2 rounded-md text-xl`}
-            >
-              Si
-            </button>
-            <button
-              className="bg-red-500 text-white min-w-48 font-bold p-2 rounded-md text-xl"
-              onMouseOver={randomResponse}
-              style={{
-                position: position,
-                top: `${buttonPosition.top}%`,
-                left: `${buttonPosition.left}%`,
-              }}
-            >
-              {Object.keys(randomValor).length === 0
-                ? 'No'
-                : randomValor.description}
-              <span hidden>
-                {
-                  (document.title =
-                    Object.keys(randomValor).length === 0
-                      ? '¿Quieres ser mi San Valentin?'
-                      : randomValor.description)
-                }
-              </span>
-            </button>
+                  jsConfetti.addConfetti({
+                    emojis: ['😍', '🥰', '❤️', '😘', '💕', '💖'],
+                    emojiSize: 70,
+                    confettiNumber: 250,
+                  });
+                }}
+                style={{ 
+                  transform: `scale(${siButtonSize})`,
+                  transformOrigin: 'center'
+                }}
+                className={`bg-gradient-to-r from-green-400 to-green-600 text-white font-bold p-3 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 active:scale-95`}
+              >
+                Sí ❤️
+              </button>
+              
+              <button
+                className="bg-gradient-to-r from-red-400 to-red-600 text-white min-w-48 font-bold p-3 rounded-lg text-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                onMouseOver={randomResponse}
+                onClick={randomResponse}
+                onTouchStart={randomResponse}
+                style={{
+                  position: position,
+                  top: `${buttonPosition.top}%`,
+                  left: `${buttonPosition.left}%`,
+                  transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+                }}
+              >
+                {Object.keys(randomValor).length === 0
+                  ? 'No'
+                  : randomValor.description}
+                <span hidden>
+                  {
+                    (document.title =
+                      Object.keys(randomValor).length === 0
+                        ? '¿Quieres ser mi San Valentín?'
+                        : randomValor.description)
+                  }
+                </span>
+              </button>
+            </div>
           </div>
         </div>
       ) : (
-        <div className="flex justify-center items-center flex-col space-y-10">
-          <h1 className="text-4xl font-bold">
-            Sabia que dirias que si ❤️!
+        <div className="flex justify-center items-center flex-col space-y-10 p-5 relative z-10">
+          <h1 className="text-4xl md:text-6xl font-bold text-center animate-bounce text-pink-700">
+            ¡Sabía que dirías que sí! ❤️
           </h1>
-          <img
-            src="https://i.pinimg.com/originals/9b/dc/c6/9bdcc6206c1d36a37149d31108c6bb41.gif"
-            alt=""
-            className="mx-auto"
-          />
-          <span hidden>{(document.title = 'Sabia que dirias que si ❤️!')}</span>
+          
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
+            <img
+              src="https://i.pinimg.com/originals/9b/dc/c6/9bdcc6206c1d36a37149d31108c6bb41.gif"
+              alt="Celebración"
+              className="mx-auto rounded-lg shadow-lg max-w-md"
+            />
+          </div>
+          
+          <p className="text-xl md:text-2xl text-center max-w-2xl text-gray-700 bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+            {noAttempts > 0 
+              ? `¡Lo intentaste ${noAttempts} ${noAttempts === 1 ? 'vez' : 'veces'} pero sabía que terminarías diciendo que sí! 🥰`
+              : "¡Sabía que eras la persona indicada! 💕"
+            }
+          </p>
+          
+          <span hidden>{(document.title = '¡Sabía que dirías que sí! ❤️')}</span>
         </div>
       )}
     </main>
